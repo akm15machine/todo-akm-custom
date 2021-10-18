@@ -1,0 +1,20 @@
+{
+  "name": "todo-akm-custom",
+  "version": "1.0.0",
+  "description": "This is a express-node based To-Do backend application with some unique set of features",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "todo-akm-custom"
+  },
+  "author": "akm15machine",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  }
+}
