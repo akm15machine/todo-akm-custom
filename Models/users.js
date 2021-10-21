@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const chalk = require('chalk');
 
 const Schema = mongoose.Schema;
 
@@ -16,7 +15,10 @@ const usersSchema = new Schema({
         type: String,
         required: true
     },
-    phone: String
+    phone: String,
+    note_ids:{
+        type: Array
+    }
 });
 
 let users = mongoose.model("users", usersSchema);
