@@ -9,6 +9,7 @@ require('dotenv').config();
 // App submodules
 // Routes
 const Users = require('./Routes/Users');
+const Notes = require('./Routes/Notes')
 
 
 //  Globals
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', Users);
+app.use('/notes', Notes);
 
 //  Listener
 app.listen(port, () => {

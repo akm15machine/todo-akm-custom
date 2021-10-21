@@ -8,7 +8,7 @@ require('dotenv').config();
 const users = require('../Models/users')
 
 // Globals
-const saltRounds = 10;
+const saltRounds = Number(process.env.SALTROUNDS);
 
 router.get('/', async (req, res) => {
     try{
