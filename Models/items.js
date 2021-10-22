@@ -9,7 +9,7 @@ const itemsSchema = new Schema({
         default: false
     },
     message: String,
-    noteId: {
+    note_id: {
         type: String,
         required: true
     },

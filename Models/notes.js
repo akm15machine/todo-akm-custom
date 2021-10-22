@@ -10,6 +10,10 @@ const notesSchema = new Schema({
     item_ids:{
         type: Array,
         required: true  //at least one item is necessary
+    },
+    user_id:{
+        type: String,
+        required: true
     }
 });
 

@@ -27,37 +27,61 @@ router.post('/', async (req, res) => {
          *      "phone": "number"
          * }
          */
-        const userLoggedIn = (user.name === "AKM"); //JWT to be implemented
-        if (userLoggedIn)
-        {
+        if (!name || !itemMsgs || !user)
+            return res.status(400).json({
+                message: `Please provide the details to create note`
+            });
+
+        const userLoggedIn = await users.findOne({name: user.name}); //JWT to be implemented
+        if (userLoggedIn){
             const newNote = new notes({name});
+            // push note id to the logged user
+            userLoggedIn.note_ids.push(Object(newNote._id));
+            //assign user id to newNote
+            newNote.user_id = userLoggedIn._id;
+            // to store the item ids
             const itemIds = []
-            
             // for each item supplied
             itemMsgs.forEach(async item => {
                 const newItem = new items();
                 //store the ids, later required for mapping
                 itemIds.push(newItem._id);
+                // update the incoming message to the newItem in mongo
                 newItem.message = item.message;
-                newItem.noteId = newNote._id;
-                //color
-                newItem.color.R = item.color.R||newItem.color.R;
-                newItem.color.G = item.color.G||newItem.color.G;
-                newItem.color.B = item.color.B||newItem.color.B;
-                
-                await newItem.save().catch(err =>{
+                // push the note id to item
+                newItem.note_id = newNote._id;
+                //color update
+                if(item.color){
+                    newItem.color.R = item.color.R || newItem.color.R;
+                    newItem.color.G = item.color.G || newItem.color.G;
+                    newItem.color.B = item.color.B || newItem.color.B;
+                }
+                // save each item
+                await newItem.save().catch( err =>{
                     return res.status(500).json({
-                        message: `Database error, couldn't add item`
+                        message: `Couldn't add item, DB error!`,
+                        error: err
                     });
+                });
+
+            });
+
+            // array of item Ids assigned to the new note
+            newNote.item_ids = itemIds;
+            // save the note
+            await newNote.save().catch(err => {
+                return res.status(500).json({
+                    message: `Couldn't save note, DB error!`,
+                    error: err
                 });
             });
             
-            newNote.item_ids = itemIds;
-            await newNote.save().catch(err => {
+            await userLoggedIn.save().catch(err => {
                 return res.status(500).json({
-                    message: `Database error, couldn't save note!`
+                    message: `Could not save to user, DB error!`,
+                    error: err
                 });
-            });
+            })
             return res.status(200).json({
                 message: `Note created for ${user.name}`
             });
@@ -75,9 +99,16 @@ router.post('/', async (req, res) => {
 
 //  Update new note
 router.put('/:notename', async (req, res) => {
-    const name = req.params.notename;
-    const findNote = await notes.find({name})
-    res.status(200).send(findNote);
+    try{
+        const name = req.params.notename;
+        const findNote = await notes.find({name})
+        return res.status(200).send(findNote);
+    } catch(err) {
+        return res.status(500).json({
+            message: `Internal Error`,
+            error: err
+        });
+    }
 });
 
 // Read note
@@ -85,7 +116,27 @@ router.put('/:notename', async (req, res) => {
 router.get('/:notename', async (req, res) => {
     try {
         const name = req.params.notename;
-        const findNote = await notes.find({name});
+        const {user} = req.body;
+        // find the given user
+        var findUser;
+        if (user.name)
+            findUser = await users.findOne({name: user.name});
+        else if (user.email)
+            findUser = await users.findOne({email: user.email});
+        else if (user.phone)
+            findUser = await users.findOne({phone: user.phone});
+        else
+            return res.status(401).json({
+                message: `Unauthorised access`
+            });
+        if(!findUser)
+            return res.status(401).json({
+                message: `User not found in database`
+            })
+        // fetch all the ids from this user
+        const idsFromUser = findUser.note_ids;
+        // all the notes with the same name under this user
+        const findNote = await notes.find({ name,  _id: idsFromUser});
         if (findNote){
             const _id = [];
             await findNote.forEach(note_elem => {
@@ -107,6 +158,17 @@ router.get('/:notename', async (req, res) => {
 });
 
 // Delete note
-router.delete('/');
+router.delete('/:noteId', async (req, res) => {
+    try{
+        const name = req.params.noteId;
+        const findNote = await notes.find({name});
+        return res.status(200).send(findNote);
+    } catch(err) {
+        return res.status(500).json({
+            message: `Internal Error`,
+            error: err
+        });
+    }
+});
 
 module.exports = router;
