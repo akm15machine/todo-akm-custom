@@ -97,20 +97,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-//  Update new note
-router.put('/:notename', async (req, res) => {
-    try{
-        const name = req.params.notename;
-        const findNote = await notes.find({name})
-        return res.status(200).send(findNote);
-    } catch(err) {
-        return res.status(500).json({
-            message: `Internal Error`,
-            error: err
-        });
-    }
-});
-
 // Read note
 // responds with all the items
 router.get('/:notename', async (req, res) => {
@@ -156,6 +142,21 @@ router.get('/:notename', async (req, res) => {
         });
     }
 });
+
+//  Update new note
+router.put('/:notename', async (req, res) => {
+    try{
+        const name = req.params.notename;
+        const findNote = await notes.find({name})
+        return res.status(200).send(findNote);
+    } catch(err) {
+        return res.status(500).json({
+            message: `Internal Error`,
+            error: err
+        });
+    }
+});
+
 
 // Delete note
 router.delete('/:noteId', async (req, res) => {

@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 //  User registration using email, username, phone number
-router.post('/register', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const {name, email, phone} = req.body;
         //pass should be allowed to be modified by bcrypt
@@ -68,7 +68,8 @@ router.post('/register', async (req, res) => {
 // User login using name, email or phone number
 router.get('/login', async (req, res) =>{
     try{
-        const {name, email, phone, pass} = req.body;
+        const { email, phone, pass} = req.body;
+        const name = req.body.username;
         // if anyone of name or email or phone is provided
         var findUser;
         if (name)
@@ -107,5 +108,13 @@ router.get('/login', async (req, res) =>{
     }
 });
 
+
+// Update profile - requires password
+router.put('/');
+// Reset Password - requires something TODO
+router.post('/reset');
+
+// Delete User: Deletes user along with notes and items - requires password
+router.delete('/')
 
 module.exports = router;

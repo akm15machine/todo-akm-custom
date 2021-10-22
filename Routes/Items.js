@@ -8,16 +8,16 @@ const items = require('../Models/items')
 
 // Globals
 
-//  Create new item
+//  Create new item -  needs note id, user credential
 router.post('/');
 
-//  Update new item
+//  Update new item - needs item id, user credential
 router.put('/');
 
-// read item
+// read item - needs array of item ids
 router.get('/');
 
-//  Delete item
+//  Delete item - needs note id, user credential
 router.delete('/');
 
 module.exports = router;

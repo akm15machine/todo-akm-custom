@@ -9,11 +9,12 @@ require('dotenv').config();
 // App submodules
 // Routes
 const Users = require('./Routes/Users');
-const Notes = require('./Routes/Notes')
+const Notes = require('./Routes/Notes');
+const Items = require('./Routes/Items');
 
 
 //  Globals
-const app = express()
+const app = express();
 const port = process.env.PORT || 3000;
 const uri = process.env.MONGO_URI;
 
@@ -45,6 +46,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', Users);
 app.use('/notes', Notes);
+app.use('/items', Items);
 
 //  Listener
 app.listen(port, () => {
