@@ -1,0 +1,21 @@
+### Login
+POST http://localhost:3300/users/
+Content-Type: application/json
+
+{
+    "name": "SMD",
+    "email": "smd@gg.com",
+    "pass": "123456",
+    "phone": "342424"
+}
+
+### Register
+POST http://localhost:3300/users/
+Content-Type: application/json
+
+{
+    "name": "SMD",
+    "email": "smd@gg.com",
+    "pass": "123456",
+    "phone":"342424"
+}

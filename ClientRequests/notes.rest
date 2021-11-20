@@ -1,0 +1,11 @@
+GET http://localhost:3300/notes/Prothom Note HTTP/1.1
+
+{
+    "user":{
+        "name": "AKM"
+    }
+}
+
+###
+
+GET http://localhost:3300/notes/Prothom Note HTTP/1.1

@@ -2,7 +2,7 @@
 const express = require('express');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
 
@@ -19,19 +19,19 @@ const port = process.env.PORT || 3000;
 const uri = process.env.MONGO_URI;
 
 // Mongoose connection operation
-try{
-    mongoose
-        .connect( uri)
-        .then()
-        .catch(err => console.log(`Error: ${err}`));
-} catch (err) {
-    console.log(chalk.red(`message: ${err}`))
-}
+mongoose
+    .connect( uri, {
+        useNewUrlParser: true
+    })
+    .then()
+    .catch(err => {
+        console.log(`Error: ${err}`);
+        process.exit(1);
+    });
+
 
 /*======================All the call-backs========================*/
 app.use(express.json({ limit: '50mb' }));
-// @ts-ignore
-//
 app.use(express.urlencoded({ limit: '1mb', urlencoded: false, extended: true }));
 
 // connection success callback
@@ -44,6 +44,9 @@ app.get('/', (req, res) => {
     res.send(`Hello, this is AKM's To-Do App, hope to see some interactivity in the other routes!`);
 });
 
+// add swagger config.
+const swaggerSpec = require('./config/swagger');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/users', Users);
 app.use('/notes', Notes);
 app.use('/items', Items);

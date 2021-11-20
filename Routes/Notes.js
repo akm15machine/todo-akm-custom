@@ -9,12 +9,15 @@ const users = require('../Models/users')
 const notes = require('../Models/notes')
 const items = require('../Models/items')
 
+//Middlewares
+const verifyToken = require("../Middlewares/verifyToken");
+
 // Globals
 
 // Create new note
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
     try {
-        const { name, itemMsgs, user } = req.body;
+        const { name, itemMsgs, user_id } = req.body;
         /**
          * name = Name of the note
          * itemMsgs = [
@@ -32,13 +35,13 @@ router.post('/', async (req, res) => {
                 message: `Please provide the details to create note`
             });
 
-        const userLoggedIn = await users.findOne({ name: user.name }); //JWT to be implemented
+        const userLoggedIn = await users.findOne({ _id: user_id});
         if (userLoggedIn) {
             const newNote = new notes({ name });
             // push note id to the logged user
             userLoggedIn.note_ids.push(Object(newNote._id));
             //assign user id to newNote
-            newNote.user_id = userLoggedIn._id;
+            newNote.user_id = user_id;
             // to store the item ids
             const itemIds = []
             // for each item supplied
@@ -88,12 +91,13 @@ router.post('/', async (req, res) => {
 
 // Read note
 // responds with all the items
-router.get('/:notename', async (req, res) => {
+router.get('/:notename', verifyToken, async (req, res) => {
     try {
+        //TODO wait change this
         const name = req.params.notename;
         const { user } = req.body;
         // find the given user
-        var findUser;
+        let findUser;
         if (user.name)
             findUser = await users.findOne({ name: user.name });
         else if (user.email)
