@@ -23,7 +23,7 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis: ['./Routes/users.js'],    //referenced from app.js
+    apis: ['./Routes/Users.js'],    //referenced from app.js
 };
 
 const swaggerSpec = swaggerJSDoc(options);

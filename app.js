@@ -47,6 +47,7 @@ app.get('/', (req, res) => {
 // add swagger config.
 const swaggerSpec = require('./config/swagger');
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+//modules
 app.use('/users', Users);
 app.use('/notes', Notes);
 app.use('/items', Items);
