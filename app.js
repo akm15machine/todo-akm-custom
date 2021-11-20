@@ -3,6 +3,7 @@ const express = require('express');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
+const cors = require('cors');
 require('dotenv').config();
 
 
@@ -33,16 +34,7 @@ mongoose
 /*======================All the call-backs========================*/
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '1mb', urlencoded: false, extended: true }));
-
-// connection success callback
-mongoose.connection.once('open', () => {    //TODO - does this needs to be in try-catch?
-    console.log(chalk.cyan('Database Connection Successful'));
-});
-
-//Routes
-app.get('/', (req, res) => {
-    res.send(`Hello, this is AKM's To-Do App, hope to see some interactivity in the other routes!`);
-});
+app.use(cors())
 
 // add swagger config.
 const swaggerSpec = require('./Config/swagger');
@@ -52,7 +44,20 @@ app.use('/users', Users);
 app.use('/notes', Notes);
 app.use('/items', Items);
 
+//Routes
+app.get('/', (req, res) => {
+    res.send(`Hello, this is AKM's To-Do App, hope to see some interactivity in the other routes!`);
+});
+
+
 //  Listener
 app.listen(port, () => {
     console.log(chalk.blue(`[app.js] listening at http://localhost:${port}`));
+});
+
+
+
+// connection success callback
+mongoose.connection.once('open', () => {    //TODO - does this needs to be in try-catch?
+    console.log(chalk.cyan('Database Connection Successful'));
 });
